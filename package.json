@@ -1,0 +1,29 @@
+{
+  "name": "zendesk-project",
+  "version": "1.0.0",
+  "description": "This is an app that requests and displays tickets form your Zendesk account",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surajshah1/test-zendesk.git"
+  },
+  "keywords": [],
+  "author": "Suraj Shah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/surajshah1/test-zendesk/issues"
+  },
+  "homepage": "https://github.com/surajshah1/test-zendesk#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "path": "^0.12.7"
+  }
+}
