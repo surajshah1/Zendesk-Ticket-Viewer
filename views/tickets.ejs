@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zendesk Ticket Token</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/main.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="/js/bulma-accordion.js"></script>
+    <link rel="stylesheet" href="/css//bulma-accordion.min.css">
+</head>
+<!---->
+<body>
+    <script>
+        var accordions = bulmaAccordion.attach();
+    </script><!---->
+    <section class="section">
+        <h1 class="title">Tickets</h1>
+        <h2 class="sub-title">There are <strong><%= data.tickets.length %></strong> tickets in this page</h2>
+
+        <h2> <a href="/tickets?prev=true&next=false " class="btn btn-primary" role="button">Previous Page</a> </h2>
+        <h2> <a href="/tickets?prev=false&next=true" class="btn btn-primary" role="button">Next Page</a> </h2>
+
+        <% for(var i in data.tickets) { %>
+            <% let ticket = data.tickets[i]; %>
+            <div class="box">
+                <% switch(ticket.status) {
+                    case "new": %>
+                    <span class="tag is-primary"><%= ticket.status %></span>
+                    <% break; case "open": %>
+                    <span class="tag is-link"><%= ticket.status %></span>
+                    <% break; case "pending": %>
+                    <span class="tag is-info"><%= ticket.status %></span>
+                    <% break; case "hold": %>
+                    <span class="tag is-warning"><%= ticket.status %></span>
+                    <% break; case "solved": %>
+                    <span class="tag is-danger"><%= ticket.status %></span>
+                    <% break; case "closed": %>
+                    <span class="tag is-dark"><%= ticket.status %></span>
+                    <% break;
+                } %>
+                <a class="accordion">Subject: <%= ticket.subject %></a>
+                <div class="panel">
+                    <p><u>Date</u>: <i><%= ticket.created_at.slice(0,10) %></i></p>
+                    <strong><u>Description</u>:</strong>
+                    <div class="sub-title">
+                        <textarea class="textarea" disabled><%= ticket.description %> </textarea>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </section>
+    <script>
+        var accordion = document.querySelectorAll(".accordion");
+        for(var i = 0; i < accordion.length; i++) {
+            accordion[i].addEventListener("click", function() {
+                var panel = this.nextElementSibling;
+                if(panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+</body>
