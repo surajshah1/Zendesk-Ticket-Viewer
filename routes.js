@@ -1,97 +1,59 @@
-var express = require("express");
-var router = express.Router();
-var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({
-    extended: false
-})
-var unirest = require("unirest");
-var all_tickets;
-var base64auth;
+const express = require('express');
+const router = express.Router();
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
+const unirest = require('unirest');
 
-var data = {
-    code: 200,
-}
-
-router.get("/", function(req, res) {
-    console.log("Log: You are on the  --HOME--  page")
-
-    res.render("index");
+router.get('/', function(req, res) {
+    res.render('index');
 });
 
-/*router.get("/about", function(req, res) {
-    console.log("Log: You are on the  *ABOUT*   page")
-
-    res.render("about");
-});*/
-
-router.get("/login", function(req, res) {
-    console.log("Log: You are on the  $LOGIN$   page")
-
-    res.render("login");
+router.get('/login', function(req, res) {
+    res.render('login');
 });
 
-//this endpoint is to get the next 25 pages
-router.get("/tickets", function(req, res) {
-    console.log("im here")
-    console.log(req.query.next)
-    //console.log(all_tickets)
-    if (req.query.next) {
-        console.log("im inside")
-
-        //console.log(all_tickets)
-        var request = unirest("GET", all_tickets.links.next);
-        request.headers({
-            "Authorization": "Basic " + base64auth
-        });
-
-        request.end(function(response) {
-            if (response.error) {
-                console.log("Authentication Error");
-                data.code = res.code;
-                res.render('login', {
-                    data: data
-                })
-            } else {
-                //appres.redic
-                all_tickets = res.body
-                res.render('tickets', {
-                    data: response.body
-                });
-            }
-        })
-    };
+router.get('/tickets', function(req, res) {
+    const base64auth = req.query.auth;
+    const subdomain = req.query.subdomain;
+    const next = req.query.next;
+    const prev = req.query.prev;
+    renderTickets(base64auth, res, subdomain, next, prev);
 });
-
 
 router.post('/login', urlencodedParser, function(req, res) {
-    //console.log(req.body)
-    var authorization_format = req.body.email + ":" + req.body.password;
-    base64auth = Buffer.from(authorization_format).toString('base64');
-    connect(base64auth, res, req.body.subdomain);
+    const authorizationFormat = `${req.body.email}:${req.body.password}`;
+    base64auth = Buffer.from(authorizationFormat).toString('base64');
+    res.redirect(`/tickets?auth=${base64auth}&subdomain=${req.body.subdomain}`);
 });
 
-function connect(base64auth, appres, link) {
-    var req = unirest("GET", link + "/api/v2/tickets.json?page[size]=25");
-    req.headers({
-        "Authorization": "Basic " + base64auth
-    });
+function renderTickets(base64auth, appres, link, next, prev) {
+    let url;
+    //handle first call to function not having next or prev
+    if (next) {
+        url = `${link}/api/v2/tickets.json?page[size]=25&page[after]=${next}`;
+    } else {
+        url = `${link}/api/v2/tickets.json?page[size]=25`;
+    }
 
+    const req = unirest('GET', url);
+    req.headers({
+        Authorization: `Basic ${base64auth}`
+    });
     req.end(function(res) {
         if (res.error) {
-            console.log("Authentication Error");
-            data.code = res.code;
-            appres.render('login', {
-                data: data
-            })
+            console.log('Authentication Error');
         } else {
-            //appres.redic
-            all_tickets = res.body
+            const newUrl = new URL(res.body.links.next);
+            const next = newUrl.searchParams.get('page[after]');
             appres.render('tickets', {
+                hasMore: res.body.meta.has_more,
+                auth: base64auth,
+                subdomain: link,
+                next,
                 data: res.body
             });
         }
     });
 }
-
 
 module.exports = router;
