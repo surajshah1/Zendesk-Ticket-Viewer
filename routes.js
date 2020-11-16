@@ -1,34 +1,37 @@
 const express = require('express');
-const router = express.Router();
-const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
-const unirest = require('unirest');
+const router = express.Router(); //make routes
+const unirest = require('unirest'); //make requests
 
+
+//homepage endpoint
 router.get('/', function(req, res) {
     res.render('index');
 });
 
+//loginpage endpoint
 router.get('/login', function(req, res) {
     res.render('login');
 });
 
-router.get('/tickets', function(req, res) {
-    const base64auth = req.query.auth;
-    const subdomain = req.query.subdomain;
-    const next = req.query.next;
-    const prev = req.query.prev;
-    renderTickets(base64auth, res, subdomain, next, prev);
-});
-
-router.post('/login', urlencodedParser, function(req, res) {
+//submit login credentials endpoint
+router.post('/login', function(req, res) {
     const authorizationFormat = `${req.body.email}:${req.body.password}`;
     base64auth = Buffer.from(authorizationFormat).toString('base64');
     res.redirect(`/tickets?auth=${base64auth}&subdomain=${req.body.subdomain}`);
 });
 
-function renderTickets(base64auth, appres, link, next, prev) {
+//tickets endpoint
+router.get('/tickets', function(req, res) {
+    const base64auth = req.query.auth;
+    const subdomain = req.query.subdomain;
+    const next = req.query.next;
+    renderTickets(base64auth, res, subdomain, next);
+});
+
+
+function renderTickets(base64auth, appres, link, next) {
     let url;
-    //handle first call to function not having next or prev
+    //identify if there is a next page
     if (next) {
         url = `${link}/api/v2/tickets.json?page[size]=25&page[after]=${next}`;
     } else {
@@ -49,7 +52,7 @@ function renderTickets(base64auth, appres, link, next, prev) {
                 hasMore: res.body.meta.has_more,
                 auth: base64auth,
                 subdomain: link,
-                next,
+                next: next,
                 data: res.body
             });
         }
