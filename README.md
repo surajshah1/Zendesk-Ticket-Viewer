@@ -28,3 +28,9 @@ Select the "Log In" button on the top right corner and then enter in your creden
 ![Entry Page](/images/home)
 
 ![Login Page](/images/login)
+
+![Credentials Entered](/images/credentials)
+
+![Tickets Page](/images/25Tickets)
+
+![Tickets Page](/images/lastTickets)
