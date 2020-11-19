@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router(); //make routes
 const unirest = require('unirest'); //make requests
+const bodyParser = require('body-parser'); //late add
+const urlencodedParser = bodyParser.urlencoded({ extended: false }) //late add
 
 
 //homepage endpoint
@@ -14,7 +16,7 @@ router.get('/login', function(req, res) {
 });
 
 //submit login credentials endpoint
-router.post('/login', function(req, res) {
+router.post('/login', urlencodedParser, function(req, res) { //late add urlencodedParser
     const authorizationFormat = `${req.body.email}:${req.body.password}`;
     base64auth = Buffer.from(authorizationFormat).toString('base64');
     res.redirect(`/tickets?auth=${base64auth}&subdomain=${req.body.subdomain}`);
