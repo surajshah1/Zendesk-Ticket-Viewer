@@ -25,12 +25,18 @@ http://localhost:8080/
 ```
 Select the "Log In" button on the top right corner and then enter in your credentials. Then click "Log In" at the bottom which will route you to the tickets page. Select the "Next Page" to see the next page of tickets on your screen.
 
+## Demo
+##### Entry page
 ![Entry Page](/images/home)
 
+##### Login page
 ![Login Page](/images/login)
 
+##### Enter Credentials
 ![Credentials Entered](/images/credentials)
 
+##### View 25 Tickets at a time
 ![Tickets Page](/images/25Tickets)
 
+#### Final page of tickets does not have a next button
 ![Tickets Page](/images/lastTickets)
