@@ -24,3 +24,7 @@ Navigate to port 8080 in your browser
 http://localhost:8080/
 ```
 Select the "Log In" button on the top right corner and then enter in your credentials. Then click "Log In" at the bottom which will route you to the tickets page. Select the "Next Page" to see the next page of tickets on your screen.
+
+![Entry Page](/images/home.PNG)
+
+![Login Page](/images/login.PNG)
